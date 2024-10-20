@@ -2,6 +2,8 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "endpoints.h"
 #include "picohttpparser.h"
@@ -17,30 +19,33 @@ void handle_connection(int sock) {
     }
 }
 
+void send_response(int sock, int error_code, const char *msg, int msg_len) {
+    char response[15 + msg_len];
+    snprintf(response, 15 + msg_len, "HTTP/1.1 %d\n\n%s", error_code, msg);
+    write(sock, response, strlen(response);
+}
+
 void call_endpoint(int sock, HTTPRequest *request) {
     if (strncmp(request->method, "POST", MIN(request->method_len, 4)) == 0) {
         if (strncmp(request->path, RELAYUPDATE_PATH,
                     MIN(request->path_len, RELAYUPDATE_PATH_LEN)) == 0) {
+        } else if (strncmp(request->path, NEWRELAY_PATH,
+                           MIN(request->path_len, NEWRELAY_PATH_LEN)) == 0) {
         } else {
-            perror("POST path %s not valid", request->path);
+            send_response(sock, 404, "POST path " request->path " not valid",
+                          20 + request->path_len);
         }
     } else if (strncmp(request->method, "GET", MIN(request->method_len, 3)) ==
                0) {
-        if (strncmp(request->path, CONSENSUS_PATH,
-                    MIN(request->path_len, CONSENSUS_PATH_LEN)) == 0) {
-        } else if (strncmp(request->path, MICRODESC_PATH,
-                           MIN(request->path_len, MICRODESC_PATH_LEN)) == 0) {
-        } else if (strncmp(request->path, RELAYDESC_PATH,
-                           MIN(request->path_len, RELAYDESC_PATH_LEN)) == 0) {
-        } else if (strncmp(request->path, STATUSALL_PATH,
-                           MIN(request->path_len, STATUSALL_PATH_LEN)) == 0) {
-        } else if (strncmp(request->path, STATUSTOR_PATH,
-                           MIN(request->path_len, STATUSTOR_PATH_LEN)) == 0) {
+        if (strncmp(request->path, STATUSALL_PATH,
+                    MIN(request->path_len, STATUSALL_PATH_LEN)) == 0) {
         } else {
-            perror("GET path %s not valid", request->path);
+            send_response(sock, 404, "GET path " request->path " not valid",
+                          19 + request->path_len);
         }
     } else {
-        perror("%s not an available method", request->method);
+        send_response(sock, 405, request->method " method not valid",
+                      17 + request->method_len);
     }
 }
 
@@ -56,7 +61,7 @@ int parse_request(int sock, HTTPRequest *request) {
                errno == EINTR);
 
         if (rret <= 0) {
-            perror("ioerror when parsing request\n");
+            send_response(sock, 400, "invalid request >:(", 19);
             return -1;
         }
 
@@ -72,13 +77,17 @@ int parse_request(int sock, HTTPRequest *request) {
         if (pret > 0) {
             return 0;
         } else if (pret == -1) {
-            perror("parserror when parsing request\n");
+            send_response(sock, 400, "invalid request >:(", 19);
             return -1;
         }
-        assert(pret == -2);
+
+        if (pret == -2) {
+            send_response(sock, 500, "something went wrong on our end :(", 34);
+            exit(EXIT_FAILURE);
+        }
 
         if (buflen == sizeof(request->buffer)) {
-            perror("request is too long\n");
+            send_response(sock, 400, "request too looooonnnggggg", 26);
             return -1;
         }
     }

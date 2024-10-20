@@ -15,6 +15,7 @@ typedef struct HTTPRequest {
 } HTTPRequest;
 
 void handle_connection(int sock);
+void send_response(int sock, int error_code, const char *msg, int msg_len);
 
 #endif
 

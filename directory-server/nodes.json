@@ -1,0 +1,44 @@
+{
+    "guardNodes": {
+        "totalNodeCount": 0,
+        "availableNodeCount": 1,
+        "availableNodes": [
+            {
+                "ipAddress": "",
+                "port": 1234,
+                "currentBandwith": 0,
+                "maxBandwith": 0
+            }
+        ],
+        "unavailableNodes": {
+        }
+    },
+    "relayNodes": {
+        "totalNodeCount": 0,
+        "availableNodeCount": 1,
+        "availableNodes": [
+            {
+                "ipAddress": "",
+                "port": 1234,
+                "currentBandwith": 0,
+                "maxBandwith": 0
+            }
+        ],
+        "unavailableNodes": {
+        }
+    },
+    "exitNodes": {
+        "totalNodeCount": 0,
+        "availableNodeCount": 1,
+        "availableNodes": [
+            {
+                "ipAddress": "",
+                "port": 1234,
+                "currentBandwith": 0,
+                "maxBandwith": 0
+            }
+        ],
+        "unavailableNodes": {
+        }
+    }
+}
