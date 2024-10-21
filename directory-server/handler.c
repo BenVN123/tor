@@ -69,10 +69,11 @@ int parse_request(int sock, HTTPRequest *request) {
         buflen += rret;
         request->num_headers =
             sizeof(request->headers) / sizeof(request->headers[0]);
-        pret = phr_parse_request(
-            request->buffer, buflen, request->method, &(request->method_len),
-            request->path, &(request->path_len), &(request->minor_version),
-            request->headers, &(request->num_headers), prevbuflen);
+        pret = phr_parse_request(&(request->buffer), buflen, &(request->method),
+                                 &(request->method_len), request->path,
+                                 &(request->path_len),
+                                 &(request->minor_version), request->headers,
+                                 &(request->num_headers), prevbuflen);
 
         if (pret > 0) {
             return 0;
