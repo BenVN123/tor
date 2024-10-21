@@ -2,7 +2,7 @@
 #define __ENDPOINTS__
 
 /* POST REQUESTS */
-#define RELAYUPDATE_PATH = "/tor/update/fp/xxxx"
+#define RELAYUPDATE_PATH "/tor/update/fp/xxxx"
 #define RELAYUPDATE_PATH_LEN 15
 #define NEWRELAY_PATH "/tor/register"
 #define NEWRELAY_PATH_LEN 13
@@ -11,7 +11,7 @@
 #define STATUSALL_PATH "/tor/status/all"
 #define STATUSALL_PATH_LEN 15
 
-#include "handler.h"
+#include "http_utils.h"
 
 void relayupdate(int sock, HTTPRequest *request);
 void newrelay(int sock, HTTPRequest *request);

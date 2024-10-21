@@ -2,6 +2,9 @@
 #define __MAIN__
 
 #define MAX_THREADS 4
+#define PORT 8080
+
+#include <sys/socket.h>
 
 typedef struct ServerInfo {
     int server_fd;

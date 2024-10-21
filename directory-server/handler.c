@@ -4,12 +4,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "endpoints.h"
+#include "http_utils.h"
 #include "picohttpparser.h"
 
 void call_endpoint(int sock, HTTPRequest *request);
-void parse_request(int sock, HTTPRequest *request);
+int parse_request(int sock, HTTPRequest *request);
 
 void handle_connection(int sock) {
     HTTPRequest request;
@@ -19,33 +21,32 @@ void handle_connection(int sock) {
     }
 }
 
-void send_response(int sock, int error_code, const char *msg, int msg_len) {
-    char response[15 + msg_len];
-    snprintf(response, 15 + msg_len, "HTTP/1.1 %d\n\n%s", error_code, msg);
-    write(sock, response, strlen(response);
-}
-
 void call_endpoint(int sock, HTTPRequest *request) {
+    char err_buffer[20 + request->path_len];
+
     if (strncmp(request->method, "POST", MIN(request->method_len, 4)) == 0) {
         if (strncmp(request->path, RELAYUPDATE_PATH,
                     MIN(request->path_len, RELAYUPDATE_PATH_LEN)) == 0) {
         } else if (strncmp(request->path, NEWRELAY_PATH,
                            MIN(request->path_len, NEWRELAY_PATH_LEN)) == 0) {
         } else {
-            send_response(sock, 404, "POST path " request->path " not valid",
-                          20 + request->path_len);
+            snprintf(err_buffer, 20 + request->path_len, "%s%s%s", "POST path ",
+                     request->path, " not valid");
+            send_response(sock, 404, err_buffer, 20 + request->path_len);
         }
     } else if (strncmp(request->method, "GET", MIN(request->method_len, 3)) ==
                0) {
         if (strncmp(request->path, STATUSALL_PATH,
                     MIN(request->path_len, STATUSALL_PATH_LEN)) == 0) {
         } else {
-            send_response(sock, 404, "GET path " request->path " not valid",
-                          19 + request->path_len);
+            snprintf(err_buffer, 19 + request->path_len, "%s%s%s", "GET path ",
+                     request->path, " not valid");
+            send_response(sock, 404, err_buffer, 19 + request->path_len);
         }
     } else {
-        send_response(sock, 405, request->method " method not valid",
-                      17 + request->method_len);
+        snprintf(err_buffer, 17 + request->path_len, "%s%s", request->method,
+                 " method not valid");
+        send_response(sock, 405, err_buffer, 17 + request->method_len);
     }
 }
 

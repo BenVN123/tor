@@ -46,7 +46,6 @@ void *worker(void *) {
 int main(void) {
     int server_fd;
     struct sockaddr_in address;
-    const int PORT = 8080;
     int addrlen = sizeof(address);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -80,14 +79,14 @@ int main(void) {
     info->addrlen = (socklen_t *)&addrlen;
     err = pthread_create(threads, NULL, check_requests, info);
     if (err) {
-        perror("There has been an error generating a thread: %d", err);
+        perror("thread errorrrrrr");
         exit(EXIT_FAILURE);
     }
 
     for (int i = 1; i < MAX_THREADS; i++) {
         err = pthread_create(&threads[i], NULL, worker, NULL);
         if (err) {
-            perror("There has been an error generating a thread: %d", err);
+            perror("thread errorrrrrr");
             exit(EXIT_FAILURE);
         }
     }
