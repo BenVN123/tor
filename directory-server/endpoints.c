@@ -21,6 +21,8 @@ void statusall(int sock, HTTPRequest *request) {
 
     cJSON_free(json_string);
     cJSON_Delete(json);
+
+    printf("node json succcessfully sent :D\n");
 }
 
 cJSON *parse_relay_file(int sock) {

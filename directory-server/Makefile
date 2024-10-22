@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -pthread -g -Wall -Wextra -Wpedantic 
+CFLAGS = -pthread -g -Wall -Wextra -Wpedantic -fsanitize=address 
 
 server: main.o queue.o handler.o endpoints.o http_utils.o picohttpparser.o cJSON.o
 	$(CC) $(CFLAGS) $^ -o $@

@@ -1,6 +1,7 @@
 #include "node_status.h"
 
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +9,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "cJSON.h"
 #include "picohttpparser.h"
 
 int send_request_statusall(void);
@@ -18,7 +20,7 @@ void update_node_statuses(void) {
     HTTPResponse response;
 
     int sock = send_request_statusall();
-    parse_response(sock, response);
+    parse_response(sock, &response);
     update_nodes_json(response.msg, response.msg_len);
 
     close(sock);
@@ -30,7 +32,7 @@ void update_nodes_json(const char *msg, int msg_len) {
     if (json == NULL) {
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL) {
-            perror("boo the nodes.json is bad");
+            perror(error_ptr);
             exit(EXIT_FAILURE);
         }
     }
@@ -45,7 +47,7 @@ void update_nodes_json(const char *msg, int msg_len) {
         exit(EXIT_FAILURE);
     }
 
-    cJSON_Free(json_string);
+    cJSON_free(json_string);
     cJSON_Delete(json);
 }
 
@@ -63,7 +65,7 @@ int send_request_statusall(void) {
     memset(&serv_addr, 0, sizeof(serv_addr));
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+    serv_addr.sin_port = htons(DA_PORT);
 
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
         perror("invalid directory server address :(\n");
@@ -76,7 +78,7 @@ int send_request_statusall(void) {
     }
 
     send(sock, request, strlen(request), 0);
-    return sock
+    return sock;
 }
 
 void parse_response(int sock, HTTPResponse *response) {

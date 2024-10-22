@@ -7,12 +7,17 @@
 #define STATUSALL_PATH "/tor/status/all"
 #define STATUSALL_PATH_LEN 15 
 
+#define DA_PORT 8080
+
+#include "picohttpparser.h"
+
+typedef struct phr_header PHRHeader;
 typedef struct HTTPResponse {
     char buffer[20000];
     int minor_version;
     int status;
     int num_headers;
-    struct phr_header headers[100];
+    PHRHeader headers[100];
     char *msg;
     int msg_len;
 } HTTPResponse;
