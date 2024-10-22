@@ -62,7 +62,8 @@ int parse_request(int sock, HTTPRequest *request) {
                errno == EINTR);
 
         if (rret <= 0) {
-            send_response(sock, 400, "invalid request >:(", 19);
+            perror("invalid request 65");
+            send_response(sock, 400, "invalid request >:( (line 65)", 19);
             return -1;
         }
 
@@ -79,7 +80,8 @@ int parse_request(int sock, HTTPRequest *request) {
         if (pret > 0) {
             return 0;
         } else if (pret == -1) {
-            send_response(sock, 400, "invalid request >:(", 19);
+            perror("invalid request 83");
+            send_response(sock, 400, "invalid request >:( (line 82)", 19);
             return -1;
         }
 

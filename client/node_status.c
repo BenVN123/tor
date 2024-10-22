@@ -32,7 +32,7 @@ void update_nodes_json(const char *msg, int msg_len) {
     if (json == NULL) {
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL) {
-            perror(error_ptr);
+            perror("summmm wrong wit hthe response......");
             exit(EXIT_FAILURE);
         }
     }
@@ -58,7 +58,7 @@ int send_request_statusall(void) {
     char *request = "GET" STATUSALL_PATH "HTTP/1.1\n";
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        printf("socket creation error :O\n");
+        perror("socket creation error :O");
         exit(EXIT_FAILURE);
     }
 
@@ -68,12 +68,12 @@ int send_request_statusall(void) {
     serv_addr.sin_port = htons(DA_PORT);
 
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        perror("invalid directory server address :(\n");
+        perror("invalid directory server address :(");
         exit(EXIT_FAILURE);
     }
 
     if (connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0) {
-        perror("connection failed :b\n");
+        perror("connection failed :b");
         exit(EXIT_FAILURE);
     }
 

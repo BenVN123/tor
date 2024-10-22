@@ -20,7 +20,7 @@ void *check_requests(void *arg) {
     while (1) {
         if ((new_socket =
                  accept(info->server_fd, info->address, info->addrlen)) < 0) {
-            perror("error on accept\n");
+            perror("error on accept");
             exit(EXIT_FAILURE);
         }
         append(new_socket);
@@ -49,7 +49,7 @@ int main(void) {
     int addrlen = sizeof(address);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-        perror("could not open socket!\n");
+        perror("could not open socket!");
         return 0;
     }
 
@@ -59,12 +59,12 @@ int main(void) {
     address.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(server_fd, (struct sockaddr *)&address, addrlen) < 0) {
-        perror("could not bind!\n");
+        perror("could not bind!");
         return 0;
     }
 
     if (listen(server_fd, 20) < 0) {
-        perror("error on listen\n");
+        perror("error on listen");
         exit(EXIT_FAILURE);
     }
 
