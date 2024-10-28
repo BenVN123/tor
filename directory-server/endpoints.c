@@ -17,6 +17,9 @@ void statusall(int sock, HTTPRequest *request) {
     cJSON *json = parse_relay_file(sock);
 
     char *json_string = cJSON_PrintUnformatted(json);
+    json_string =
+        realloc(json_string, (strlen(json_string) + 5) * sizeof(char));
+    strncat(json_string, "\r\n\r\n", 4);
     send_response(sock, 200, json_string, strlen(json_string));
 
     cJSON_free(json_string);

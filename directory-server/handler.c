@@ -33,20 +33,24 @@ void call_endpoint(int sock, HTTPRequest *request) {
             snprintf(err_buffer, 20 + request->path_len, "%s%s%s", "POST path ",
                      request->path, " not valid");
             send_response(sock, 404, err_buffer, 20 + request->path_len);
+            perror("1");
         }
     } else if (strncmp(request->method, "GET", MIN(request->method_len, 3)) ==
                0) {
         if (strncmp(request->path, STATUSALL_PATH,
                     MIN(request->path_len, STATUSALL_PATH_LEN)) == 0) {
+            statusall(sock, request);
         } else {
             snprintf(err_buffer, 19 + request->path_len, "%s%s%s", "GET path ",
                      request->path, " not valid");
             send_response(sock, 404, err_buffer, 19 + request->path_len);
+            perror("2");
         }
     } else {
         snprintf(err_buffer, 17 + request->path_len, "%s%s", request->method,
                  " method not valid");
         send_response(sock, 405, err_buffer, 17 + request->method_len);
+        perror("3");
     }
 }
 

@@ -1,6 +1,7 @@
 #include "node_status.h"
 
 #include <arpa/inet.h>
+#include <ctype.h>
 #include <errno.h>
 #include <netinet/in.h>
 #include <stdio.h>
@@ -15,6 +16,7 @@
 int send_request_statusall(void);
 void parse_response(int sock, HTTPResponse *response);
 void update_nodes_json(const char *msg, int msg_len);
+char *trim_whitespace(char *str, int *msg_len);
 
 void update_node_statuses(void) {
     HTTPResponse response;
@@ -27,7 +29,8 @@ void update_node_statuses(void) {
 }
 
 void update_nodes_json(const char *msg, int msg_len) {
-    cJSON *json = cJSON_ParseWithLength(msg, msg_len);
+    char *trimmed_msg = trim_whitespace(msg, &msg_len);
+    cJSON *json = cJSON_ParseWithLength(trimmed_msg, msg_len);
 
     if (json == NULL) {
         const char *error_ptr = cJSON_GetErrorPtr();
@@ -51,11 +54,32 @@ void update_nodes_json(const char *msg, int msg_len) {
     cJSON_Delete(json);
 }
 
+char *trim_whitespace(char *str, int *msg_len) {
+    char *end;
+
+    while (isspace((unsigned char)*str)) {
+        --*msg_len;
+        ++str;
+    }
+
+    if (*str == 0) return str;
+
+    end = str + strlen(str) - 1;
+    while (end > str && isspace((unsigned char)*end)) {
+        --*msg_len;
+        --end;
+    }
+
+    end[1] = '\0';
+
+    return str;
+}
+
 int send_request_statusall(void) {
     int sock;
     long valread;
     struct sockaddr_in serv_addr;
-    char *request = "GET" STATUSALL_PATH "HTTP/1.1\n";
+    char *request = "GET " STATUSALL_PATH " HTTP/1.1\r\n\r\n";
 
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("socket creation error :O");
@@ -68,7 +92,7 @@ int send_request_statusall(void) {
     serv_addr.sin_port = htons(DA_PORT);
 
     if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) {
-        perror("invalid directory server address :(");
+        perror("1 invalid directory server address :(");
         exit(EXIT_FAILURE);
     }
 
@@ -93,7 +117,7 @@ void parse_response(int sock, HTTPResponse *response) {
                errno == EINTR);
 
         if (rret <= 0) {
-            perror("invalid response from directory server >:(");
+            perror("2 invalid response from directory server >:(");
             exit(EXIT_FAILURE);
         }
 
@@ -110,7 +134,7 @@ void parse_response(int sock, HTTPResponse *response) {
         if (pret > 0) {
             return;
         } else if (pret == -1) {
-            perror("invalid response from directory server >:(");
+            perror("3 invalid response from directory server >:(");
             exit(EXIT_FAILURE);
         }
 
