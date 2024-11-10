@@ -30,9 +30,6 @@ void *check_requests(void *arg) {
 void *worker(void *) {
     int next_socket;
     while (1) {
-        // TODO: second semaphore for POST requests, since
-        // multiple nodes might want to change JSON at the
-        // same time and cause race condition
         sem_wait(&sem_pop);
         next_socket = pop();
         sem_post(&sem_pop);

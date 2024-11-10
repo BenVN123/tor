@@ -12,20 +12,15 @@ unsigned long random_prime(void);
 unsigned int gcd(uint64_t p, uint64_t q);
 uint64_t extended_euclidean(uint64_t a, uint64_t b);
 void find_exponents(uint64_t totient, uint64_t *public, uint64_t *private);
-void save_key(const char *filename, uint64_t exp, uint64_t n);
 
-void generate_new_rsa_key(void) {
+void generate_new_rsa_key(uint64_t *private_exp, uint64_t *public_exp,
+                          uint64_t *modulus) {
     uint32_t p = random_prime();
     uint32_t q = random_prime();
-    uint64_t n = p * q;
+    *modulus = p * q;
     uint64_t totient = (p - 1) * (q - 1);
 
-    uint64_t public_exp;
-    uint64_t private_exp;
-    find_exponents(totient, &public_exp, &private_exp);
-
-    save_key("node_rsa_keys/id_rsa", private_exp, n);
-    save_key("node_rsa_keys/id_rsa.pub", public_exp, n);
+    find_exponents(totient, public_exp, private_exp);
 }
 
 void rsa_convert_data(uint8_t *dest, uint64_t *data, size_t size, uint64_t exp,
@@ -114,15 +109,4 @@ void find_exponents(uint64_t totient, uint64_t *public, uint64_t *private) {
     }
 
     *private = extended_euclidean(*public, totient);
-}
-
-void save_key(const char *filename, uint64_t exp, uint64_t n) {
-    FILE *file = fopen(filename, "w");
-    if (file == NULL) {
-        perror("could not save rsa key");
-        exit(EXIT_FAILURE);
-    }
-
-    fprintf(file, "%llu\n%llu\n", exp, n);
-    fclose(file);
 }
