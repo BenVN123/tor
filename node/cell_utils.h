@@ -1,5 +1,5 @@
-#ifndef __CELLS__
-#define __CELLS__
+#ifndef __CELL_UTILS__ 
+#define __CELL_UTILS__
 
 #include <stdint.h>
 
