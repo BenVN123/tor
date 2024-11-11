@@ -7,8 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "cryptography.h"
 #include "instructions.h"
-#include "rsa.h"
 
 int receive_client_rsa(int sock, char *buffer, uint64_t *public_exp,
                        uint64_t *modulus);
@@ -77,7 +77,7 @@ int receive_client_rsa(int sock, char *buffer, uint64_t *public_exp,
 
 int send_node_rsa(int sock, uint64_t *private_exp, uint64_t *public_exp,
                   uint64_t *modulus) {
-    generate_new_rsa_key(private_exp, public_exp, modulus);
+    generate_rsa_key(private_exp, public_exp, modulus);
     char message[50];
     snprintf(message, 25, "%llu\n%llu\n", *public_exp, *modulus);
     ssize_t bytes_sent = send(sock, message, strlen(message), 0);
