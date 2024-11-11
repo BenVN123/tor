@@ -1,5 +1,5 @@
-#ifndef __CELL_UTILS__ 
-#define __CELL_UTILS__
+#ifndef __CELLS__
+#define __CELLS__
 
 #include <stdint.h>
 
@@ -9,7 +9,7 @@
 #define CREATED 0x03
 #define DESTROY 0x04
 
-// Relay flag 
+// Relay flag
 #define RELAY 0x05
 
 typedef struct ControlCell {
@@ -27,8 +27,10 @@ typedef struct RelayCell {
     uint8_t data[498];
 } RelayCell;
 
+
 int is_relay_cell(uint8_t *cell);
-ControlCell* new_control_cell(uint8_t *cell);
-RelayCell* new_relay_cell(uint8_t *cell);
+ControlCell *new_control_cell(uint8_t *cell);
+RelayCell *new_relay_cell(uint8_t *cell);
+
 
 #endif

@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "cell_utils.h"
+#include "instructions.h"
 #include "rsa.h"
 
 int receive_client_rsa(int sock, char *buffer, uint64_t *public_exp,
@@ -34,14 +34,14 @@ void handle_connection(int sock) {
         return;
     }
 
-    // TODO: create a cell listener that will read incoming cells from this
-    // specific IP, figure out next node based on CircID, create new CircID, or
-    // drop if invalid CircID and not a CREATE command.
+    listen_instructions(sock, byte_buffer, prev_node_public_exp,
+                        prev_node_modulus, private_exp_for_prev_node,
+                        public_exp_for_prev_node, modulus_for_prev_node);
 }
 
 int receive_client_rsa(int sock, char *buffer, uint64_t *public_exp,
                        uint64_t *modulus) {
-    ssize_t bytes_received = read(sock, buffer, sizeof(buffer));
+    ssize_t bytes_received = recv(sock, buffer, sizeof(buffer), 0);
     if (bytes_received > 0) {
         buffer[bytes_received] = '\0';
     } else if (bytes_received == 0) {
