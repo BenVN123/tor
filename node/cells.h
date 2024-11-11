@@ -27,10 +27,8 @@ typedef struct RelayCell {
     uint8_t data[498];
 } RelayCell;
 
-
 int is_relay_cell(uint8_t *cell);
 ControlCell *new_control_cell(uint8_t *cell);
 RelayCell *new_relay_cell(uint8_t *cell);
-
 
 #endif

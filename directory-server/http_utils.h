@@ -3,7 +3,7 @@
 
 #include "picohttpparser.h"
 
-typedef struct phr_header PHRHeader; // >:(
+typedef struct phr_header PHRHeader;  // >:(
 typedef struct HTTPRequest {
     char buffer[4096];
     int minor_version;
@@ -15,6 +15,6 @@ typedef struct HTTPRequest {
     char *path;
 } HTTPRequest;
 
-void send_response(int sock, int error_code, const char *msg, int msg_len); 
+void send_response(int sock, int error_code, const char *msg, int msg_len);
 
 #endif

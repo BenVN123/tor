@@ -1,8 +1,8 @@
 #ifndef __CIRCUITS__
 #define __CIRCUITS__
 
-#include <stdint.h>
 #include <netinet/in.h>
+#include <stdint.h>
 
 typedef struct Circuit {
     uint16_t circ_id;

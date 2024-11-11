@@ -1,11 +1,11 @@
+#include "queue.h"
+
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "queue.h"
-
 struct QueueNode {
-   int socket;
-   QueueNode *next;
+    int socket;
+    QueueNode *next;
 };
 
 static QueueNode *head;
@@ -16,14 +16,13 @@ void append(int socket) {
     new_node->socket = socket;
     new_node->next = NULL;
     if (tail) {
-        tail->next = new_node; 
+        tail->next = new_node;
         tail = tail->next;
     } else {
         head = new_node;
         tail = new_node;
     }
 }
-
 
 int pop(void) {
     if (!head) {

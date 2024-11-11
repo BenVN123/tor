@@ -5,7 +5,7 @@
 #define DIRECTORY_SERVER_PORT 1234
 
 #define STATUSALL_PATH "/tor/status/all"
-#define STATUSALL_PATH_LEN 15 
+#define STATUSALL_PATH_LEN 15
 
 #define DA_PORT 8080
 
@@ -25,4 +25,3 @@ typedef struct HTTPResponse {
 void update_node_statuses(void);
 
 #endif
-
