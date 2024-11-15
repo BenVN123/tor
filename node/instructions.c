@@ -10,15 +10,14 @@
 
 #include "cells.h"
 #include "circuits.h"
+#include "cryptography/rsa.h"
 
 void handle_create_cell(int sock, ControlCell *control_cell,
                         CircuitListNode *circuit_list);
 
-void listen_instructions(int sock, uint8_t *cell, uint64_t prev_node_public_exp,
-                         uint64_t prev_node_modulus,
-                         uint64_t private_exp_for_prev_node,
-                         uint64_t public_exp_for_prev_node,
-                         uint64_t modulus_for_prev_node) {
+void listen_instructions(int sock, uint8_t *cell, public_key_class *node_pub,
+                         private_key_class *node_priv,
+                         public_key_class *prev_pub) {
     CircuitListNode *circuit_list = new_circuit_list();
 
     while (1) {
