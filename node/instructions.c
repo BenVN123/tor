@@ -87,8 +87,10 @@ void handle_create_cell(int sock, ControlCell *control_cell,
                     (encrypted[i] << 8u) & control_cell->data[(i * 8) + j];
             }
         }
-
-        char *decrypted = rsa_decrypt(
+        char *decrypted = rsa_decrypt(encrypted, sizeof(encrypted), node_priv);
+        // TODO: what is decrypted is receives agreed modulus and base, as well
+        // as prev node's g^a mod p. now, we must choose a secret and send it
+        // back to prev node along with a hashed key.
     } else {
         perror(
             "previous node chose a circID that already exists for CREATE cell, "
