@@ -13,7 +13,10 @@
 #include "cryptography/rsa.h"
 
 void handle_create_cell(int sock, ControlCell *control_cell,
-                        CircuitListNode *circuit_list);
+                        CircuitListNode *circuit_list,
+                        public_key_class *node_pub,
+                        private_key_class *node_priv,
+                        public_key_class *prev_pub);
 
 void listen_instructions(int sock, uint8_t *cell, public_key_class *node_pub,
                          private_key_class *node_priv,
@@ -33,7 +36,8 @@ void listen_instructions(int sock, uint8_t *cell, public_key_class *node_pub,
                 case PADDING:
                     break;
                 case CREATE:
-                    handle_create_cell(sock, control_cell, circuit_list);
+                    handle_create_cell(sock, control_cell, circuit_list,
+                                       node_pub, node_priv, prev_pub);
                     break;
                 case DESTROY:
                     break;
@@ -47,7 +51,10 @@ void listen_instructions(int sock, uint8_t *cell, public_key_class *node_pub,
 }
 
 void handle_create_cell(int sock, ControlCell *control_cell,
-                        CircuitListNode *circuit_list) {
+                        CircuitListNode *circuit_list,
+                        public_key_class *node_pub,
+                        private_key_class *node_priv,
+                        public_key_class *prev_pub) {
     if (retrieve_circuit(circuit_list, control_cell->circ_id) == NULL) {
         Circuit *circuit = malloc(sizeof(Circuit));
         circuit->circ_id = control_cell->circ_id;
@@ -70,10 +77,22 @@ void handle_create_cell(int sock, ControlCell *control_cell,
             return;
         }
         free(ip);
-
         add_circuit(circuit_list, circuit);
 
-        // TODO: implement diffie-hellman handshake. the data of the cell is
-        // rsa-encrypted
+        long long *encrypted = malloc(sizeof(long long) * 63);
+        for (int i = 0; i < 63; ++i) {
+            encrypted[i] = 0;
+            for (int j = 0; j < 8; ++j) {
+                encrypted[i] =
+                    (encrypted[i] << 8u) & control_cell->data[(i * 8) + j];
+            }
+        }
+
+        char *decrypted = rsa_decrypt(
+    } else {
+        perror(
+            "previous node chose a circID that already exists for CREATE cell, "
+            "which shouldn't be possible\n");
+        exit(EXIT_FAILURE);
     }
 }
