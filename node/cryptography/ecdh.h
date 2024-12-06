@@ -106,6 +106,12 @@ int ecdsa_sign(const uint8_t* private_key, uint8_t* hash, uint8_t* random_k,
 int ecdsa_verify(const uint8_t* public_key, uint8_t* hash,
                  const uint8_t* signature);
 
+/*
+ * Pseudo random number generation
+ */
+uint32_t prng_next(void);
+void prng_init(uint32_t seed);
+
 /******************************************************************************/
 
 #ifdef __cplusplus

@@ -1,6 +1,7 @@
 #include "instructions.h"
 
 #include <arpa/inet.h>
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -88,9 +89,23 @@ void handle_create_cell(int sock, ControlCell *control_cell,
             }
         }
         char *decrypted = rsa_decrypt(encrypted, sizeof(encrypted), node_priv);
-        // TODO: what is decrypted is receives agreed modulus and base, as well
-        // as prev node's g^a mod p. now, we must choose a secret and send it
-        // back to prev node along with a hashed key.
+
+        for (int i = 0; i < ECC_PRV_KEY_SIZE; ++i) {
+            circuit->private_key[i] = prng_next();
+        }
+        assert(ecdh_generate_keys(circuit->public_key, circuit->private_key));
+        assert(ecdh_shared_secret(circuit->private_key, (uint8_t *)decrypted,
+                                  circuit->shared_secret));
+
+        ssize_t bytes_sent = send(sock, (char *)circuit->public_key,
+                                  strlen((char *)circuit->public_key), 0);
+
+        if (bytes_sent == 0) {
+            perror("could not send diffie hellman public key\n");
+        } else if (bytes_sent < 0) {
+            perror("smt went wrong sending diffie hellman public key....\n");
+            exit(EXIT_FAILURE);
+        }
     } else {
         perror(
             "previous node chose a circID that already exists for CREATE cell, "

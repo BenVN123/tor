@@ -9,6 +9,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "cryptography/ecdh.h"
 #include "handler.h"
 #include "queue.h"
 
@@ -44,6 +45,8 @@ int main(void) {
     int server_fd;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
+
+    prng_init((0xbad ^ 0xc0ffee ^ 42) | 0xcafebabe | 666);
 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("could not open socket!");
