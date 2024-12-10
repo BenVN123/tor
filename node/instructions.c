@@ -97,8 +97,14 @@ void handle_create_cell(int sock, ControlCell *control_cell,
         assert(ecdh_shared_secret(circuit->private_key, (uint8_t *)decrypted,
                                   circuit->shared_secret));
 
+        ControlCell response_cell;
+        response_cell.circ_id = control_cell->circ_id;
+        response_cell.cmd = control_cell->cmd;
+        memcpy(circuit->public_key, response_cell.data, 48);
+        uint8_t *response_byte = control_cell_to_byte(&response_cell);
         ssize_t bytes_sent = send(sock, (char *)circuit->public_key,
                                   strlen((char *)circuit->public_key), 0);
+        free(response_byte);
 
         if (bytes_sent == 0) {
             perror("could not send diffie hellman public key\n");

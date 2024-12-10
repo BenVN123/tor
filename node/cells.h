@@ -30,5 +30,7 @@ typedef struct RelayCell {
 int is_relay_cell(uint8_t *cell);
 ControlCell *new_control_cell(uint8_t *cell);
 RelayCell *new_relay_cell(uint8_t *cell);
+uint8_t *control_cell_to_byte(ControlCell *cell);
+uint8_t *relay_cell_to_byte(RelayCell *cell);
 
 #endif
