@@ -99,7 +99,7 @@ void handle_create_cell(int sock, ControlCell *control_cell,
 
         ControlCell response_cell;
         response_cell.circ_id = control_cell->circ_id;
-        response_cell.cmd = control_cell->cmd;
+        response_cell.cmd = CREATED;
         memcpy(circuit->public_key, response_cell.data, 48);
         uint8_t *response_byte = control_cell_to_byte(&response_cell);
         ssize_t bytes_sent = send(sock, (char *)circuit->public_key,
