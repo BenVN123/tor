@@ -102,8 +102,8 @@ void handle_create_cell(int sock, ControlCell *control_cell,
         response_cell.cmd = CREATED;
         memcpy(circuit->public_key, response_cell.data, 48);
         uint8_t *response_byte = control_cell_to_byte(&response_cell);
-        ssize_t bytes_sent = send(sock, (char *)circuit->public_key,
-                                  strlen((char *)circuit->public_key), 0);
+        ssize_t bytes_sent =
+            send(sock, (char *)response_byte, strlen((char *)response_byte), 0);
         free(response_byte);
 
         if (bytes_sent == 0) {
